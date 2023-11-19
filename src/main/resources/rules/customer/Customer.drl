@@ -1,0 +1,43 @@
+package rules.product;
+
+import com.mknieszner.reflectiondemo.input.CustomerDto
+import com.mknieszner.reflectiondemo.xml.HeaderInput
+import com.mknieszner.reflectiondemo.xml.HeaderInputType
+import com.mknieszner.reflectiondemo.xml.KeyValueInput
+import com.mknieszner.reflectiondemo.util.ByPath
+import org.slf4j.Logger
+
+global com.mknieszner.reflectiondemo.xml.DocumentInput document
+
+dialect  "java"
+
+rule "Customer"
+    when
+        $customer : CustomerDto()
+        $log : Logger()
+    then
+        /* HEADER */
+        document.addHeader(HeaderInput.builder().type(HeaderInputType.DEFAULT).value("KLIENT").build());
+
+        /* KEY VALUE */
+        document.addKeyValue(KeyValueInput.strongKeyValue(
+                "Nazwa_klienta",
+                ByPath.getString($customer, "base", "name")
+        ));
+
+        document.addKeyValue(KeyValueInput.strongKeyValue(
+                "Cif",
+                ByPath.getString($customer, "base", "cif")
+        ));
+
+        document.addKeyValue(KeyValueInput.strongKeyValue(
+                "Regon",
+                ByPath.getString($customer, "base", "regon")
+        ));
+
+        document.addKeyValue(KeyValueInput.strongKeyValue(
+                "Nip",
+                ByPath.getString($customer, "base", "nip")
+        ));
+
+end

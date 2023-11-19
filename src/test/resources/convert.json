@@ -1,0 +1,41 @@
+{
+  "sections": [
+    {
+      "header": {
+        "value": "Header1",
+        "type": "DEFAULT"
+      }
+    },
+    {
+      "keyValue": {
+        "key": "Kwota",
+        "value": "10,00"
+      }
+    },
+    {
+      "keyValue": {
+        "key": "Waluta",
+        "value": "PLN"
+      }
+    },
+    {
+      "table": {
+        "type": "SCHEDULE",
+        "title": "HARMONOGRAM_SPŁAT",
+        "headers": {
+          "header1": "Data"
+        },
+        "rows": {
+          "rows": [
+            {
+              "cell1": "2022-11-10"
+            },
+            {
+              "cell1": "2023-11-10"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

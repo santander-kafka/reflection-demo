@@ -1,0 +1,22 @@
+package rules.initial;
+
+import org.slf4j.Logger
+import com.mknieszner.reflectiondemo.xml.HeaderInput
+import com.mknieszner.reflectiondemo.xml.HeaderInputType
+import com.mknieszner.reflectiondemo.xml.DividerInput
+
+global com.mknieszner.reflectiondemo.xml.DocumentInput document
+
+dialect  "java"
+
+rule "Customer"
+    when
+        $log : Logger()
+    then
+        /* HEADER */
+        document.addHeader(HeaderInput.builder().type(HeaderInputType.DEFAULT).value("DECYZJA_PRODUKTOWA").build());
+
+        /* DIVIDER */
+        document.addDivider(2);
+
+end

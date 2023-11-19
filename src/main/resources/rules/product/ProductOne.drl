@@ -1,0 +1,73 @@
+package rules.product;
+
+import com.mknieszner.reflectiondemo.input.ProductDto
+import com.mknieszner.reflectiondemo.input.ExtraProductDto
+import com.mknieszner.reflectiondemo.xml.KeyMultiValueInput
+import com.mknieszner.reflectiondemo.xml.KeyValueInput
+import com.mknieszner.reflectiondemo.util.Mappings
+import com.mknieszner.reflectiondemo.util.ByPath;
+import com.mknieszner.reflectiondemo.input.ProductDto
+import com.mknieszner.reflectiondemo.xml.HeaderInput
+import com.mknieszner.reflectiondemo.xml.HeaderInputType
+import com.mknieszner.reflectiondemo.xml.TableRowInput
+import com.mknieszner.reflectiondemo.xml.TableInput
+import com.mknieszner.reflectiondemo.xml.TableHeadersInput
+import com.mknieszner.reflectiondemo.xml.TableRowsInput
+import com.mknieszner.reflectiondemo.input.ScheduleItem;
+import java.util.List
+import java.util.stream.Collectors
+import java.util.ArrayList
+import org.slf4j.Logger;
+
+
+global com.mknieszner.reflectiondemo.xml.DocumentInput document;
+
+dialect  "java"
+
+rule "Product One"
+    when
+        $product : ExtraProductDto()
+        $log : Logger()
+    then
+
+        /* HEADER */
+        document.addHeader(HeaderInput.builder().type(HeaderInputType.DEFAULT).value("PRODUKT").build());
+
+        /* HEADER */
+        document.addKeyValue(KeyValueInput.strongKeyValue(
+                "Typ_produktu",
+                ByPath.getString($product, "type")
+        ));
+        document.addKeyValue(KeyValueInput.keyValue(
+                "Kwota",
+                Mappings.toFixedString(ByPath.getBigDecimal($product, "amount", "value"))
+        ));
+
+
+        /* HEADER */
+        TableHeadersInput headers = TableHeadersInput.builder()
+                                      .header1("Kwota")
+                                      .header2("Data_splaty")
+                                      .header3("Opis")
+                                      .build();
+
+        TableRowsInput rows = TableRowsInput.builder().build();
+
+        for ( ScheduleItem item: $product.getSchedule().getItems() ) {
+            rows.getRows().add(TableRowInput.builder()
+                 .cell1(Mappings.toFixedString(ByPath.getBigDecimal(item, "amount")))
+                 .cell2(ByPath.getString(item, "date"))
+                 .cell3(ByPath.getString(item, "description"))
+                 .build());
+         }
+
+        TableInput scheduleTable = TableInput.builder()
+            .type("SCHEDULE")
+            .title("Harmonogram_splat")
+            .headers(headers)
+            .rows(rows)
+        .build();
+
+        document.addTable(scheduleTable);
+
+end
